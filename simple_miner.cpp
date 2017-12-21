@@ -19,7 +19,7 @@ public:
   node_t *cuckoo;
 
   cuckoo_ctx(const char* header, const u32 headerlen, const u32 nonce, edge_t easy_ness) {
-    ((u32 *)header)[headerlen/sizeof(u32)-1] = htole32(nonce); // place nonce at end
+    ((u32 *)header)[headerlen/sizeof(u32)-1] = htole32(nonce); // place nonce at end and convert to little endian
     setheader(header, headerlen, &sip_keys);
     easiness = easy_ness;
     cuckoo = (node_t *)calloc(1+NNODES, sizeof(node_t));

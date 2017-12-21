@@ -2,14 +2,7 @@
 #define INCLUDE_SIPHASH_H
 #include <stdint.h>    // for types uint32_t,uint64_t
 #include <immintrin.h> // for _mm256_* intrinsics
-#ifndef __APPLE__
 #include <endian.h>    // for htole32/64
-#else
-#include <machine/endian.h>
-#include <libkern/OSByteOrder.h>
-#define htole32(x) OSSwapHostToLittleInt32(x)
-#define htole64(x) OSSwapHostToLittleInt64(x)
-#endif
 
 // save some keystrokes since i'm a lazy typer
 typedef uint32_t u32;

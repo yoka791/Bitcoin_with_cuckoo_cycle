@@ -3,8 +3,8 @@
 
 #include <stdint.h> // for types uint32_t,uint64_t
 #include <string.h> // for functions strlen, memset
-#include "blake2.h"
 #include "siphash.h"
+#include "sha256.h"
 
 #ifdef SIPHASH_COMPAT
 #include <stdio.h>
@@ -84,8 +84,8 @@ int verify(edge_t nonces[PROOFSIZE], siphash_keys *keys) {
 // convenience function for extracting siphash keys from header
 void setheader(const char *header, const u32 headerlen, siphash_keys *keys) {
   char hdrkey[32];
-  // SHA256((unsigned char *)header, headerlen, (unsigned char *)hdrkey);
-  blake2b((void *)hdrkey, sizeof(hdrkey), (const void *)header, headerlen, 0, 0);
+  std::string headar_to_string = std::string(header, headerlen);
+  std::string sha_output = sha256(headar_to_string);
 #ifdef SIPHASH_COMPAT
   u64 *k = (u64 *)hdrkey;
   u64 k0 = k[0];
@@ -96,5 +96,5 @@ void setheader(const char *header, const u32 headerlen, siphash_keys *keys) {
   k[2] = k0 ^ 0x6c7967656e657261ULL;
   k[3] = k1 ^ 0x7465646279746573ULL;
 #endif
-  setkeys(keys, hdrkey);
+  setkeys(keys, sha_output.c_str());
 }
