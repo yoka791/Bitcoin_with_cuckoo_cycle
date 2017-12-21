@@ -22,14 +22,14 @@ public:
     ((u32 *)header)[headerlen/sizeof(u32)-1] = htole32(nonce); // place nonce at end and convert to little endian
     setheader(header, headerlen, &sip_keys);
     easiness = easy_ness;
-    cuckoo = (node_t *)calloc(1+NNODES, sizeof(node_t));
+    cuckoo = (node_t *)calloc(1+NNODES, sizeof(node_t));  //2^27 +1
     assert(cuckoo != 0);
   }
   ~cuckoo_ctx() {
     free(cuckoo);
   }
 };
-
+//int path(node_t *cuckoo, node_t u - value from table, node_t *us - us[0] original index) {
 int path(node_t *cuckoo, node_t u, node_t *us) {
   int nu;
   for (nu = 0; u; u = cuckoo[u]) {
@@ -73,7 +73,8 @@ void worker(cuckoo_ctx *ctx) {
     node_t u0 = sipnode(&ctx->sip_keys, nonce, 0);
     if (u0 == 0) continue; // reserve 0 as nil; v0 guaranteed non-zero
     node_t v0 = sipnode(&ctx->sip_keys, nonce, 1);
-    node_t u = cuckoo[u0], v = cuckoo[v0];
+	node_t u = cuckoo[u0];
+	node_t v = cuckoo[v0];
     us[0] = u0;
     vs[0] = v0;
 #ifdef SHOW
@@ -82,10 +83,11 @@ void worker(cuckoo_ctx *ctx) {
       else           printf("%2d:%02d ",j,cuckoo[j]);
     printf(" %x (%d,%d)\n", nonce,*us,*vs);
 #endif
-    int nu = path(cuckoo, u, us), nv = path(cuckoo, v, vs);
-    if (us[nu] == vs[nv]) {
+	int nu = path(cuckoo, u, us);  //finding the path to the root, save in us from node to its root
+	int nv = path(cuckoo, v, vs);
+    if (us[nu] == vs[nv]) {  // found cycle
       int min = nu < nv ? nu : nv;
-      for (nu -= min, nv -= min; us[nu] != vs[nv]; nu++, nv++) ;
+      for (nu -= min, nv -= min; us[nu] != vs[nv]; nu++, nv++) ;  //to check
       int len = nu + nv + 1;
       printf("% 4d-cycle found at %d%%\n", len, (int)(nonce*100L/ctx->easiness));
       if (len == PROOFSIZE)

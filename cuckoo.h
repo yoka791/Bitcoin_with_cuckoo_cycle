@@ -40,12 +40,12 @@ typedef u32 node_t;
 
 // generate edge endpoint in cuckoo graph without partition bit
 edge_t _sipnode(siphash_keys *keys, edge_t nonce, u32 uorv) {
-  return siphash24(keys, 2*nonce + uorv) & EDGEMASK;
+  return siphash24(keys, 2*nonce + uorv) & EDGEMASK;   //& for modolu
 }
 
 // generate edge endpoint in cuckoo graph
 node_t sipnode(siphash_keys *keys, edge_t nonce, u32 uorv) {
-  return _sipnode(keys, nonce, uorv) << 1 | uorv;
+  return _sipnode(keys, nonce, uorv) << 1 | uorv;   //2h(..,..)+1/0
 }
 
 enum verify_code { POW_OK, POW_HEADER_LENGTH, POW_TOO_BIG, POW_TOO_SMALL, POW_NON_MATCHING, POW_BRANCH, POW_DEAD_END, POW_SHORT_CYCLE};
@@ -84,8 +84,8 @@ int verify(edge_t nonces[PROOFSIZE], siphash_keys *keys) {
 // convenience function for extracting siphash keys from header
 void setheader(const char *header, const u32 headerlen, siphash_keys *keys) {
   char hdrkey[32];
-  std::string headar_to_string = std::string(header, headerlen);
-  std::string sha_output = sha256(headar_to_string);
+  std::string header_to_string = std::string(header, headerlen);
+  std::string sha_output = sha256(header_to_string);
 #ifdef SIPHASH_COMPAT
   u64 *k = (u64 *)hdrkey;
   u64 k0 = k[0];
