@@ -68,40 +68,40 @@ void solution(cuckoo_ctx *ctx, node_t *us, int nu, node_t *vs, int nv) {
 
 void worker(cuckoo_ctx *ctx) {
   node_t *cuckoo = ctx->cuckoo;
-  node_t us[MAXPATHLEN], vs[MAXPATHLEN];
+  node_t even_path_to_root[MAXPATHLEN], odd_path_to_root[MAXPATHLEN];
   for (node_t nonce = 0; nonce < ctx->easiness; nonce++) {
-    node_t u0 = sipnode(&ctx->sip_keys, nonce, 0);
-    if (u0 == 0) continue; // reserve 0 as nil; v0 guaranteed non-zero
-    node_t v0 = sipnode(&ctx->sip_keys, nonce, 1);
-	node_t u = cuckoo[u0];
-	node_t v = cuckoo[v0];
-    us[0] = u0;
-    vs[0] = v0;
+    node_t even_node_index = sipnode(&ctx->sip_keys, nonce, 0);
+    if (even_node_index == 0) continue; // reserve 0 as nil; odd_node_index guaranteed non-zero
+    node_t odd_node_index = sipnode(&ctx->sip_keys, nonce, 1);
+	node_t value_from_even_table = cuckoo[even_node_index];
+	node_t value_from_odd_table = cuckoo[odd_node_index];
+    even_path_to_root[0] = even_node_index;
+    odd_path_to_root[0] = odd_node_index;
 #ifdef SHOW
     for (unsigned j=1; j<NNODES; j++)
       if (!cuckoo[j]) printf("%2d:   ",j);
       else           printf("%2d:%02d ",j,cuckoo[j]);
-    printf(" %x (%d,%d)\n", nonce,*us,*vs);
+    printf(" %x (%d,%d)\n", nonce,*even_path_to_root,*odd_path_to_root);
 #endif
-	int nu = path(cuckoo, u, us);  //finding the path to the root, save in us from node to its root
-	int nv = path(cuckoo, v, vs);
-    if (us[nu] == vs[nv]) {  // found cycle
-      int min = nu < nv ? nu : nv;
-      for (nu -= min, nv -= min; us[nu] != vs[nv]; nu++, nv++) ;  //to check
-      int len = nu + nv + 1;
+	int even_root_index = path(cuckoo, value_from_even_table, even_path_to_root);  //finding the path to the root, save in even_path_to_root from node to its root, return its index in even_path_to_root/odd_path_to_root
+	int odd_root_index = path(cuckoo, value_from_odd_table, odd_path_to_root);
+    if (even_path_to_root[even_root_index] == odd_path_to_root[odd_root_index]) {  // found cycle
+      int min = even_root_index < odd_root_index ? even_root_index : odd_root_index;
+      for (even_root_index -= min, odd_root_index -= min; even_path_to_root[even_root_index] != odd_path_to_root[odd_root_index]; even_root_index++, odd_root_index++) ;  //for calculating length
+      int len = even_root_index + odd_root_index + 1;
       printf("% 4d-cycle found at %d%%\n", len, (int)(nonce*100L/ctx->easiness));
       if (len == PROOFSIZE)
-        solution(ctx, us, nu, vs, nv);
+        solution(ctx, even_path_to_root, even_root_index, odd_path_to_root, odd_root_index);
       continue;
     }
-    if (nu < nv) {
-      while (nu--)
-        cuckoo[us[nu+1]] = us[nu];
-      cuckoo[u0] = v0;
+    if (even_root_index < odd_root_index) {  //revrese shorter path
+      while (even_root_index--)
+        cuckoo[even_path_to_root[even_root_index+1]] = even_path_to_root[even_root_index];
+      cuckoo[even_node_index] = odd_node_index;
     } else {
-      while (nv--)
-        cuckoo[vs[nv+1]] = vs[nv];
-      cuckoo[v0] = u0;
+      while (odd_root_index--)
+        cuckoo[odd_path_to_root[odd_root_index+1]] = odd_path_to_root[odd_root_index];
+      cuckoo[odd_node_index] = even_node_index;
     }
   }
 }
