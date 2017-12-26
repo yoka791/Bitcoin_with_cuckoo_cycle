@@ -14,14 +14,14 @@ on vs:
 	a. Debugging->Program Arguments-> "-h 211"
 	b. VC++ Directories->incluse directories->enter copied include folder.
 	c. C/C++->Preprocesser-> enter: "SHOW;IDXSHIFT=0;PROOFSIZE=6;EDGEBITS=3;"
-4.  Right click on the project->add->existing item. add files you want.
+4.  	Right click on the project->add->existing item. add files you want.
 
 Google Test:
 1.	Right click on solution->Add->New Project->Visual c++->Test->Google Test.
 2.	include the appropriate tested file.	
-3.  Test->Windows->Test explorer
+3. 	Test->Windows->Test explorer
 4.	Write Tests.
-5.  on Test explorer: Run all tests.
+5.  	on Test explorer: Run all tests.
 
 
     
