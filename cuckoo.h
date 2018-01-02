@@ -63,12 +63,12 @@ int verify(edge_t nonces[PROOFSIZE], siphash_keys *keys) {
     xor0 ^= uvs[2*n  ] = sipnode(keys, nonces[n], 0);
     xor1 ^= uvs[2*n+1] = sipnode(keys, nonces[n], 1);
   }
-  if (xor0|xor1)              // matching endpoints imply zero xors
+  if (xor0|xor1)              // check if for each node the degree is even 
     return POW_NON_MATCHING;
   u32 n = 0, i = 0, j;
   do {                        // follow cycle
     for (u32 k = j = i; (k = (k+2) % (2*PROOFSIZE)) != i; ) {
-      if (uvs[k] == uvs[i]) { // find other edge endpoint identical to one at i
+      if (uvs[k] == uvs[i]) { // if found other edge endpoint identical to one at i
         if (j != i)           // already found one before
           return POW_BRANCH;
         j = k;

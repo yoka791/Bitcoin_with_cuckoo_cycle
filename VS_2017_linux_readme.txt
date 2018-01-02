@@ -1,8 +1,10 @@
 working with vs 2017 linux
 on linux machine:
 1.	install ssh: 
-	sudo apt-get install openssh-server openssh-client
-2.	use static ip, set it.
+	sudo apt-get install openssh-server
+2.	sudo apt install -y build-essential gdbserver
+sudo apt-get install openssh-client
+3.	use static ip, set it.
 
 -copy includes from linux to windows:
 /usr/include
