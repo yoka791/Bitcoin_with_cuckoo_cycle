@@ -28,9 +28,12 @@ int main(int argc, char **argv) {
 
 	array<edge_t, 42> solution_arr;
 	CuckooMiner cuc_miner(header, edge_precentage);
-	if (cuc_miner.isSolutionFound()) {
+	if (cuc_miner.isSolutionFound())
+	{
 		cuc_miner.getSolution(solution_arr);
-		printf("nonces added to array");
+		printf("nonces added to array\n");
+		if (verify(solution_arr, header)) {
+			printf("verified solution\n");
+		}
 	}
-
 }

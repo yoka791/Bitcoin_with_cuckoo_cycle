@@ -20,23 +20,30 @@ CuckooMiner::genSolution(node_t *even_path_to_root, uint even_root_index, node_t
 	std::set<edge> cycle;
 	unsigned n;
 	cycle.insert(edge(*even_path_to_root, *odd_path_to_root));
-	while (even_root_index--)
-		cycle.insert(edge(even_path_to_root[(even_root_index + 1)&~1], even_path_to_root[even_root_index | 1])); // u's in even position; v's in odd
-	while (odd_root_index--)
-		cycle.insert(edge(odd_path_to_root[odd_root_index | 1], odd_path_to_root[(odd_root_index + 1)&~1])); // u's in odd position; v's in even
+	while (even_root_index--) {
+		node_t node1_even = even_path_to_root[(even_root_index + 1)&~1];
+		node_t node2_even = even_path_to_root[even_root_index | 1];
+		cycle.insert(edge(node1_even, node2_even));
+	}
+	while (odd_root_index--) {
+		node_t node1_odd = odd_path_to_root[odd_root_index | 1];
+		node_t node2_odd = odd_path_to_root[(odd_root_index + 1)&~1];
+		cycle.insert(edge(node1_odd, node2_odd)); // u's in odd position; v's in even
+	}
 	printf("Solution");
 	uint counter = 0;
-	for (edge_t nonce = n = 0; nonce < edges_num; nonce++) {
+	for (edge_t nonce = n = 0; (nonce < edges_num) && (counter < PROOFSIZE); nonce++) {
 		edge e(sipnode(&sip_keys, nonce, 0), sipnode(&sip_keys, nonce, 1));
 		if (cycle.find(e) != cycle.end()) {
 			#ifdef SHOW_CYCLES_NONCES
-			printf(" %x\n", nonce);
+			printf(" %x ", nonce);
 			#endif
-			cycle.erase(e);
+			if (PROOFSIZE != 2) cycle.erase(e);
 			solution_arr[counter] = nonce;
 			counter++;
 		}
 	}
+	printf("\n");
 }
 
 uint

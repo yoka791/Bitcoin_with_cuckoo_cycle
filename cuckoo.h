@@ -3,6 +3,8 @@
 
 #include <stdint.h> // for types uint32_t,uint64_t
 #include <string.h> // for functions strlen, memset
+#include <array>
+
 #include "siphash.h"
 #include "sha256.h"
 
@@ -41,4 +43,7 @@ node_t sipnode(siphash_keys *keys, edge_t nonce, u32 uorv);
 
 // convenience function for extracting siphash keys from header
 void setKeysFromHeader(const std::string &header, siphash_keys *keys);
+
+bool verify(const std::array<edge_t, 42> solution_arr, const std::string& header);
+
 #endif //_CUCKOO_H
