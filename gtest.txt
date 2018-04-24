@@ -1,0 +1,1 @@
+g++ gtest.cpp sha256.cpp -lgtest -lgtest_main -lpthread
