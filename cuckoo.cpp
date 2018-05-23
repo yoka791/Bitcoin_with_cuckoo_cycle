@@ -13,8 +13,7 @@ node_t sipnode(siphash_keys *keys, edge_t nonce, u32 uorv)
 
 void setKeysFromHeader(const std::string &header, siphash_keys *keys)
 {
-  std::string sha_output = sha256(header);
-  setkeys(keys, sha_output.c_str());
+  setkeys(keys, header.c_str());
 }
 
 bool verify(const std::array<edge_t, 42> solution_arr, const std::string& header)
