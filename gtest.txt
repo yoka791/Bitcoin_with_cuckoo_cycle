@@ -1,1 +1,25 @@
-g++ gtest.cpp sha256.cpp -lgtest -lgtest_main -lpthread
+https://www.eriksmistad.no/getting-started-with-google-test-on-ubuntu/
+
+sudo apt-get install libgtest-dev
+
+sudo apt-get install cmake # install cmake
+cd /usr/src/gtest
+sudo cmake CMakeLists.txt
+sudo make
+ 
+# copy or symlink libgtest.a and libgtest_main.a to your /usr/lib folder
+sudo cp *.a /usr/lib
+
+// basic_test.cpp
+#include <gtest/gtest.h>
+ 
+TEST(Basic_test, test1) { 
+    ASSERT_EQ(2, 2);
+}
+
+int main(int argc, char **argv) {
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}
+
+g++ basic_test.cpp -lgtest -lgtest_main -lpthread
