@@ -44,6 +44,6 @@ node_t sipnode(siphash_keys *keys, edge_t nonce, u32 uorv);
 // convenience function for extracting siphash keys from header
 void setKeysFromHeader(const std::string &header, siphash_keys *keys);
 
-bool verify(const std::array<edge_t, 42> solution_arr, const std::string& header);
+bool verify(const std::array<edge_t, 42> solution_arr, const std::string& header, const uint &edge_precentage);
 
 #endif //_CUCKOO_H

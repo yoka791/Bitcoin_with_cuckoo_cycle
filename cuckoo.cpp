@@ -16,16 +16,16 @@ void setKeysFromHeader(const std::string &header, siphash_keys *keys)
   setkeys(keys, header.c_str());
 }
 
-bool verify(const std::array<edge_t, 42> solution_arr, const std::string& header)
+bool verify(const std::array<edge_t, 42> solution_arr, const std::string& header, const uint &edge_precentage)
 {
 	siphash_keys sip_keys;
 	setKeysFromHeader(header, &sip_keys);
-
+	u64 edges_num = edge_precentage * (u64)NNODES / 100;
 	node_t even_nodes[ PROOFSIZE];
 	node_t odd_nodes[PROOFSIZE];
 	node_t xor0 = 0, xor1 = 0;
 	for (u32 n = 0; n < PROOFSIZE; n++) {
-		if (solution_arr[n] > MODULU)  //no. of edge does not exist
+		if (solution_arr[n] > edges_num)  //no. of edge does not exist
 			return false;
 		if (n && solution_arr[n] <= solution_arr[n - 1])
 			return false;
