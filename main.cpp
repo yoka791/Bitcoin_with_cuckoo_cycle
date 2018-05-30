@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
 	//assert(edge_precentage >= 0 && edge_precentage <= 100);
 
 	array<edge_t, 42> solution_arr;
-	const std::string str = "0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206";
+	const std::string str = "24049c38c37703eca6201ce18bba39e8d102a5d417bba93386660578ddeea1a0";
 	CuckooMiner cuc_miner(str, 70);
 	if (cuc_miner.isSolutionFound())
 	{
@@ -26,6 +26,7 @@ int main(int argc, char **argv) {
 		} else {
 			printf("error - solution not veified\n");
 		}
+		for (auto& elem : solution_arr) cout << elem << ", ";
 	}
 
 	////
