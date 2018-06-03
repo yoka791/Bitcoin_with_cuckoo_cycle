@@ -259,7 +259,7 @@ public:
         nBits          = block.nBits;
         nNonce         = block.nNonce;
 		cycle_arr	   = block.cycle_arr;
-		assert(block.cycle_arr[0] != 0);
+		//assert(block.cycle_arr[0] != 0);
     }
 
     CDiskBlockPos GetBlockPos() const {
