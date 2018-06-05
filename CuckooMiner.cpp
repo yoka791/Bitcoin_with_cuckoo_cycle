@@ -36,7 +36,7 @@ CuckooMiner::genSolution(node_t *even_path_to_root, uint even_root_index, node_t
 		edge e(sipnode(&sip_keys, nonce, 0), sipnode(&sip_keys, nonce, 1));
 		if (cycle.find(e) != cycle.end()) {
 			#ifdef SHOW_CYCLES_NONCES
-			printf(" %x ", nonce);
+			printf(" 0x%x, ", nonce);
 			#endif
 			if (PROOFSIZE != 2) cycle.erase(e);
 			solution_arr[counter] = nonce;
