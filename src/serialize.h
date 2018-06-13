@@ -19,6 +19,7 @@
 #include <string.h>
 #include <utility>
 #include <vector>
+#include <array>
 
 #include "prevector.h"
 
@@ -534,6 +535,13 @@ template<typename Stream, typename K, typename T, typename Pred, typename A> voi
 template<typename Stream, typename K, typename T, typename Pred, typename A> void Unserialize(Stream& is, std::map<K, T, Pred, A>& m, int nType, int nVersion);
 
 /**
+* array
+*/
+template<typename K> unsigned int GetSerializeSize(const std::array<K, 42>& m, int nType, int nVersion);
+template<typename Stream, typename K> void Serialize(Stream& os, const std::array<K, 42>& m, int nType, int nVersion);
+template<typename Stream, typename K> void Unserialize(Stream& is, std::array<K, 42>& m, int nType, int nVersion);
+
+/**
  * set
  */
 template<typename K, typename Pred, typename A> unsigned int GetSerializeSize(const std::set<K, Pred, A>& m, int nType, int nVersion);
@@ -839,7 +847,37 @@ void Unserialize(Stream& is, std::map<K, T, Pred, A>& m, int nType, int nVersion
     }
 }
 
+/**
+* array
+*/
+template<typename K>
+unsigned int GetSerializeSize(const std::array<K, 42>& m, int nType, int nVersion)
+{
+    unsigned int nSize = GetSizeOfCompactSize(m.size());
+    for (typename std::array<K, 42>::const_iterator it = m.begin(); it != m.end(); ++it)
+        nSize += GetSerializeSize((*it), nType, nVersion);
+    return nSize;
+}
 
+template<typename Stream, typename K>
+void Serialize(Stream& os, const std::array<K, 42>& m, int nType, int nVersion)
+{
+    WriteCompactSize(os, m.size());
+    for (typename std::array<K, 42>::const_iterator it = m.begin(); it != m.end(); ++it)
+        Serialize(os, (*it), nType, nVersion);
+}
+
+template<typename Stream, typename K>
+void Unserialize(Stream& is, std::array<K, 42>& m, int nType, int nVersion)
+{
+    unsigned int nSize = ReadCompactSize(is);
+    for (unsigned int i = 0; i < nSize; i++)
+    {
+        K key;
+        Unserialize(is, key, nType, nVersion);
+        m[i] = key;
+    }
+}
 
 /**
  * set

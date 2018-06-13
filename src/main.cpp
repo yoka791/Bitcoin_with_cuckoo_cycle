@@ -35,6 +35,7 @@
 #include "utilstrencodings.h"
 #include "validationinterface.h"
 #include "versionbits.h"
+#include "cuckoo.h"
 
 #include <sstream>
 
@@ -1548,8 +1549,12 @@ bool ReadBlockFromDisk(CBlock& block, const CDiskBlockPos& pos, const Consensus:
     }
 
     // Check the header
-    if (!CheckProofOfWork(block.GetHash(), block.nBits, consensusParams))
-        return error("ReadBlockFromDisk: Errors in block header at %s", pos.ToString());
+    /*if (!CheckProofOfWork(block.GetHash(), block.nBits, consensusParams))
+        return error("ReadBlockFromDisk: Errors in block header at %s", pos.ToString());*/
+    if (!CheckProofOfWork(SerializeHash(block.cycle_arr), block.nBits, consensusParams))
+        return error("ReadBlockFromDisk: Errors in block header (CheckProofOfWork) at %s", pos.ToString());
+    if (!verify(block.cycle_arr, block.GetHash().ToString()))
+        return error("ReadBlockFromDisk: Errors in block header (verify) at %s", pos.ToString());
 
     return true;
 }
@@ -3206,9 +3211,13 @@ bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, unsigne
 bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, bool fCheckPOW)
 {
     // Check proof of work matches claimed amount
-    if (fCheckPOW && !CheckProofOfWork(block.GetHash(), block.nBits, Params().GetConsensus()))
+    /*if (fCheckPOW && !CheckProofOfWork(block.GetHash(), block.nBits, Params().GetConsensus()))
         return state.DoS(50, error("CheckBlockHeader(): proof of work failed"),
                          REJECT_INVALID, "high-hash");
+    */
+    if (fCheckPOW && (!CheckProofOfWork(SerializeHash(block.cycle_arr), block.nBits, Params().GetConsensus()) || !verify(block.cycle_arr, block.GetHash().ToString())))
+        return state.DoS(50, error("CheckBlockHeader(): proof of work failed"),
+            REJECT_INVALID, "high-hash");
 
     // Check timestamp
     if (block.GetBlockTime() > GetAdjustedTime() + 2 * 60 * 60)

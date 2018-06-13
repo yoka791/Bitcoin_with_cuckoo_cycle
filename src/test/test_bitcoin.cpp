@@ -18,6 +18,8 @@
 #include "txmempool.h"
 #include "ui_interface.h"
 #include "util.h"
+#include "CuckooMiner.h"
+
 #ifdef ENABLE_WALLET
 #include "wallet/db.h"
 #include "wallet/wallet.h"
@@ -128,7 +130,22 @@ TestChain100Setup::CreateAndProcessBlock(const std::vector<CMutableTransaction>&
     unsigned int extraNonce = 0;
     IncrementExtraNonce(&block, chainActive.Tip(), extraNonce);
 
-    while (!CheckProofOfWork(block.GetHash(), block.nBits, chainparams.GetConsensus())) ++block.nNonce;
+    //while (!CheckProofOfWork(block.GetHash(), block.nBits, chainparams.GetConsensus())) ++block.nNonce;
+    do {
+        //hash on vtx + header except edges
+        CuckooMiner miner(block.GetHash().ToString(), EDGE_PRECENTAGE);
+        if (!miner.isSolutionFound()) {
+            ++block.nNonce;
+            continue;
+        }
+        miner.getSolution(block.cycle_arr);
+        if (CheckProofOfWork(SerializeHash(block.cycle_arr), block.nBits, Params().GetConsensus())) { //cycle + T is ok
+            break;
+        }
+        else {
+            ++block.nNonce;
+        }
+    } while (1);
 
     CValidationState state;
     ProcessNewBlock(state, chainparams, NULL, &block, true, NULL);

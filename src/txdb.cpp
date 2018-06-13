@@ -11,6 +11,7 @@
 #include "main.h"
 #include "pow.h"
 #include "uint256.h"
+#include "cuckoo.h"
 
 #include <stdint.h>
 
@@ -202,9 +203,15 @@ bool CBlockTreeDB::LoadBlockIndexGuts()
                 pindexNew->nNonce         = diskindex.nNonce;
                 pindexNew->nStatus        = diskindex.nStatus;
                 pindexNew->nTx            = diskindex.nTx;
+                pindexNew->cycle_arr = diskindex.cycle_arr;
 
-                if (!CheckProofOfWork(pindexNew->GetBlockHash(), pindexNew->nBits, Params().GetConsensus()))
+                /*if (!CheckProofOfWork(pindexNew->GetBlockHash(), pindexNew->nBits, Params().GetConsensus()))
+                    return error("LoadBlockIndex(): CheckProofOfWork failed: %s", pindexNew->ToString());*/
+
+                if (!CheckProofOfWork(SerializeHash(pindexNew->cycle_arr), pindexNew->nBits, Params().GetConsensus()))
                     return error("LoadBlockIndex(): CheckProofOfWork failed: %s", pindexNew->ToString());
+                if (!verify(pindexNew->cycle_arr, pindexNew->GetBlockHash().ToString()))
+                    return error("%s: verify failed: %s", __func__, pindexNew->ToString());
 
                 pcursor->Next();
             } else {

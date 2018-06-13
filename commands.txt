@@ -1,0 +1,25 @@
+./autogen.sh
+./configure
+make install
+
+cd /usr/local/bin
+./bitcoind -regtest -port=8330 -rpcport=8331 -rpcuser=user -rpcpassword=password -datadir=/root/node1data -printtoconsole
+
+cd /usr/local/bin
+./bitcoind -regtest -port=8333 -rpcport=8332 -rpcuser=user2 -rpcpassword=password2 -datadir=/root/node2data -printtoconsole -connect=127.0.0.1:8330
+
+cd /usr/local/bin
+./bitcoin-cli -regtest -port=8333 -rpcport=8332 -rpcuser=user2 -rpcpassword=password2  getblockcount
+
+./bitcoind -regtest -printtoconsole
+./bitcoin-cli -regtest getblockcount
+
+cd ~
+rm -rf .bitcoin/
+rm -rf node1data/
+rm -rf node2data/
+mkdir node1data
+mkdir node2data
+
+cd cuc_bitcoin_0.12.1
+make install

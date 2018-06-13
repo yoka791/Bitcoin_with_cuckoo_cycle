@@ -19,8 +19,10 @@
 #include "util.h"
 #include "utilstrencodings.h"
 #include "validationinterface.h"
+#include "CuckooMiner.h"
 
 #include <stdint.h>
+#include "hash.h"
 
 #include <boost/assign/list_of.hpp>
 #include <boost/shared_ptr.hpp>
@@ -165,10 +167,23 @@ UniValue generate(const UniValue& params, bool fHelp)
             LOCK(cs_main);
             IncrementExtraNonce(pblock, chainActive.Tip(), nExtraNonce);
         }
-        while (!CheckProofOfWork(pblock->GetHash(), pblock->nBits, Params().GetConsensus())) {
+        /*while (!CheckProofOfWork(pblock->GetHash(), pblock->nBits, Params().GetConsensus())) {
             // Yes, there is a chance every nonce could fail to satisfy the -regtest
             // target -- 1 in 2^(2^32). That ain't gonna happen.
             ++pblock->nNonce;
+        }*/
+        while (1) {
+            CuckooMiner miner(pblock->GetHash().ToString(), EDGE_PRECENTAGE);
+            if (!miner.isSolutionFound()) {
+                ++pblock->nNonce;
+                continue;
+            }
+            miner.getSolution(pblock->cycle_arr);
+            if (CheckProofOfWork(SerializeHash(pblock->cycle_arr), pblock->nBits, Params().GetConsensus())) { //cycle + T is ok
+                break;
+            } else {
+                ++pblock->nNonce;
+            }
         }
         CValidationState state;
         if (!ProcessNewBlock(state, Params(), NULL, pblock, true, NULL))

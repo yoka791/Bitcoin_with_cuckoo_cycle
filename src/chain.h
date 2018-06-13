@@ -11,6 +11,7 @@
 #include "pow.h"
 #include "tinyformat.h"
 #include "uint256.h"
+#include "cuckoo.h"
 
 #include <vector>
 
@@ -142,6 +143,7 @@ public:
     unsigned int nTime;
     unsigned int nBits;
     unsigned int nNonce;
+    std::array<edge_t, 42> cycle_arr;
 
     //! (memory only) Sequential id assigned to distinguish order in which blocks are received.
     uint32_t nSequenceId;
@@ -182,6 +184,7 @@ public:
         nTime          = block.nTime;
         nBits          = block.nBits;
         nNonce         = block.nNonce;
+        cycle_arr = block.cycle_arr;
     }
 
     CDiskBlockPos GetBlockPos() const {
@@ -212,6 +215,7 @@ public:
         block.nTime          = nTime;
         block.nBits          = nBits;
         block.nNonce         = nNonce;
+        block.cycle_arr = cycle_arr;
         return block;
     }
 

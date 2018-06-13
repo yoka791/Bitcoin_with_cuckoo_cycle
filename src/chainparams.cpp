@@ -16,7 +16,7 @@
 
 #include "chainparamsseeds.h"
 
-static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesisOutputScript, uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
+static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesisOutputScript, uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward, const std::array<edge_t, 42> &cycle_arr)
 {
     CMutableTransaction txNew;
     txNew.nVersion = 1;
@@ -31,6 +31,8 @@ static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesi
     genesis.nBits    = nBits;
     genesis.nNonce   = nNonce;
     genesis.nVersion = nVersion;
+    genesis.cycle_arr = cycle_arr;
+    assert(genesis.cycle_arr[0] != 0);
     genesis.vtx.push_back(txNew);
     genesis.hashPrevBlock.SetNull();
     genesis.hashMerkleRoot = BlockMerkleRoot(genesis);
@@ -48,11 +50,11 @@ static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesi
  *     CTxOut(nValue=50.00000000, scriptPubKey=0x5F1DF16B2B704C8A578D0B)
  *   vMerkleTree: 4a5e1e
  */
-static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
+static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward, const std::array<edge_t, 42> &cycle_arr)
 {
     const char* pszTimestamp = "The Times 03/Jan/2009 Chancellor on brink of second bailout for banks";
     const CScript genesisOutputScript = CScript() << ParseHex("04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f") << OP_CHECKSIG;
-    return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward);
+    return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward, cycle_arr);
 }
 
 /**
@@ -105,8 +107,9 @@ public:
         nDefaultPort = 8333;
         nMaxTipAge = 24 * 60 * 60;
         nPruneAfterHeight = 100000;
+        std::array<edge_t, 42> cycle_arr;  //not a real solution
 
-        genesis = CreateGenesisBlock(1231006505, 2083236893, 0x1d00ffff, 1, 50 * COIN);
+        genesis = CreateGenesisBlock(1231006505, 2083236893, 0x1d00ffff, 1, 50 * COIN, cycle_arr);
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock == uint256S("0x000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f"));
         assert(genesis.hashMerkleRoot == uint256S("0x4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b"));
@@ -193,8 +196,9 @@ public:
         nDefaultPort = 18333;
         nMaxTipAge = 0x7fffffff;
         nPruneAfterHeight = 1000;
+        std::array<edge_t, 42> cycle_arr;  //not a real solution
 
-        genesis = CreateGenesisBlock(1296688602, 414098458, 0x1d00ffff, 1, 50 * COIN);
+        genesis = CreateGenesisBlock(1296688602, 414098458, 0x1d00ffff, 1, 50 * COIN, cycle_arr);
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock == uint256S("0x000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943"));
         assert(genesis.hashMerkleRoot == uint256S("0x4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b"));
@@ -265,27 +269,35 @@ public:
         nMaxTipAge = 24 * 60 * 60;
         nDefaultPort = 18444;
         nPruneAfterHeight = 1000;
-
-        genesis = CreateGenesisBlock(1296688602, 2, 0x207fffff, 1, 50 * COIN);
+#if NODEBITS == 22
+        std::array<edge_t, 42> cycle_arr = { 0x10325,  0x1a680,  0x279ec,  0x2e489,  0x3f6bc,  0x4dd49,  0x6639a,  0x69ed8,  0x6f8da,  0x7dca1,  0x968fc,  0xa32f7,  0xafcf9,  0xc5fb8,  0xd38df,  0xe7d75,  0xe9a4e,  0xf3eba,  0xfb2b0,  0xff148,  0x118406,  0x11c575,  0x1209da,  0x12127d,  0x1222b3,  0x12ab3d,  0x14b736,  0x14c907,  0x14f69c,  0x151cb7,  0x1710fd,  0x179023,  0x189a62,  0x195b8c,  0x1b4056,  0x1ba428,  0x1c229f,  0x1c66f9,  0x1d9202,  0x204f96,  0x214237,  0x257e8c };
+        genesis = CreateGenesisBlock(1296688602, 3, 0x207fffff, 1, 50 * COIN, cycle_arr);
+#elif NODEBITS == 28
+        std::array<edge_t, 42> cycle_arr = { 0x40a7a2,  0x74e1e4,  0xda541e,  0x10e9985,  0x14b65ac,  0x17cce56,  0x2348a53,  0x2450dc8,  0x2a632ea,  0x2ab58a1,  0x2cc5cfd,  0x2d62c17,  0x367057b,  0x3ae521c,  0x3bb026f,  0x3cfb994,  0x3e1021a,  0x3ea524c,  0x40b756c,  0x42673ad,  0x42e399e,  0x4519e38,  0x45dc398,  0x46e31de,  0x497af78,  0x4a9d241,  0x4fb1be6,  0x4fb25f8,  0x59188d2,  0x5abe191,  0x6209e75,  0x652e7f0,  0x65d5ae0,  0x70b69f0,  0x73dc96f,  0x73e0586,  0x76e7a77,  0x777691e,  0x7d9f7cf,  0x847dbf7,  0x915a67a,  0x92c8802 };
+        genesis = CreateGenesisBlock(1296688602, 3, 0x207fffff, 1, 50 * COIN, cycle_arr);
+#else 
+        assert(false);
+#endif
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206"));
+
+        assert(consensus.hashGenesisBlock == uint256S("0x5b7a4494ac602f4ddfbd5fbd180a5d670978b765d487c3680a50f5c03572f600"));
         assert(genesis.hashMerkleRoot == uint256S("0x4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b"));
 
         vFixedSeeds.clear(); //! Regtest mode doesn't have any fixed seeds.
         vSeeds.clear();  //! Regtest mode doesn't have any DNS seeds.
 
-        /*fMiningRequiresPeers = false;
+        fMiningRequiresPeers = false;
         fDefaultConsistencyChecks = true;
         fRequireStandard = false;
         fMineBlocksOnDemand = true;
-        fTestnetToBeDeprecatedFieldRPC = false;*/
+        fTestnetToBeDeprecatedFieldRPC = false;
 
-        fMiningRequiresPeers = false;
+        /*fMiningRequiresPeers = false;
         fDefaultConsistencyChecks = false;
         fRequireStandard = true;
         fMineBlocksOnDemand = false;
         fTestnetToBeDeprecatedFieldRPC = false;
-
+        */
         checkpointData = (CCheckpointData){
             boost::assign::map_list_of
             ( 0, uint256S("0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206")),

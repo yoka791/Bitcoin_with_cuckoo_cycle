@@ -12,6 +12,20 @@
 
 uint256 CBlockHeader::GetHash() const
 {
+    CBlockHeaderNoCycle block_no_cycle;
+    block_no_cycle.SetNull();
+
+    block_no_cycle.nVersion = nVersion;
+    block_no_cycle.hashPrevBlock = hashPrevBlock;
+    block_no_cycle.hashMerkleRoot = hashMerkleRoot;
+    block_no_cycle.nTime = nTime;
+    block_no_cycle.nBits = nBits;
+    block_no_cycle.nNonce = nNonce;
+    return block_no_cycle.GetHash();
+}
+
+uint256 CBlockHeaderNoCycle::GetHash() const
+{
     return SerializeHash(*this);
 }
 
@@ -29,5 +43,10 @@ std::string CBlock::ToString() const
     {
         s << "  " << vtx[i].ToString() << "\n";
     }
+    s << "cycle=\n";
+    for (const auto& edge : cycle_arr) {
+        s << strprintf("0x%08x", edge);
+    }
+    s << "\n";
     return s.str();
 }
