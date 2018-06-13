@@ -286,18 +286,18 @@ public:
         vFixedSeeds.clear(); //! Regtest mode doesn't have any fixed seeds.
         vSeeds.clear();  //! Regtest mode doesn't have any DNS seeds.
 
-        fMiningRequiresPeers = false;
+        /*fMiningRequiresPeers = false;
         fDefaultConsistencyChecks = true;
         fRequireStandard = false;
         fMineBlocksOnDemand = true;
         fTestnetToBeDeprecatedFieldRPC = false;
-
-        /*fMiningRequiresPeers = false;
+        */
+        fMiningRequiresPeers = false;
         fDefaultConsistencyChecks = false;
         fRequireStandard = true;
         fMineBlocksOnDemand = false;
         fTestnetToBeDeprecatedFieldRPC = false;
-        */
+        
         checkpointData = (CCheckpointData){
             boost::assign::map_list_of
             ( 0, uint256S("0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206")),

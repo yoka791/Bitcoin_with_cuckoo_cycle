@@ -24,6 +24,7 @@
 #include "util.h"
 #include "utilmoneystr.h"
 #include "validationinterface.h"
+#include "CuckooMiner.h"
 
 #include <boost/thread.hpp>
 #include <boost/tuple/tuple.hpp>
@@ -436,39 +437,55 @@ void static BitcoinMiner(const CChainParams& chainparams)
             //
             int64_t nStart = GetTime();
             arith_uint256 hashTarget = arith_uint256().SetCompact(pblock->nBits);
-            uint256 hash;
-            uint32_t nNonce = 0;
             while (true) {
+                bool found = false;
                 // Check if something found
-                if (ScanHash(pblock, nNonce, &hash))
+                while(1)
                 {
-                    if (UintToArith256(hash) <= hashTarget)
-                    {
-                        // Found a solution
-                        pblock->nNonce = nNonce;
-                        assert(hash == pblock->GetHash());
-
-                        SetThreadPriority(THREAD_PRIORITY_NORMAL);
-                        LogPrintf("BitcoinMiner:\n");
-                        LogPrintf("proof-of-work found  \n  hash: %s  \ntarget: %s\n", hash.GetHex(), hashTarget.GetHex());
-                        ProcessBlockFound(pblock, chainparams);
-                        SetThreadPriority(THREAD_PRIORITY_LOWEST);
-                        coinbaseScript->KeepScript();
-
-                        // In regression test mode, stop mining after a block is found.
-                        if (chainparams.MineBlocksOnDemand())
-                            throw boost::thread_interrupted();
-
+                    CuckooMiner miner(pblock->GetHash().ToString(), EDGE_PRECENTAGE);
+                    if (!miner.isSolutionFound()) {
+                        ++pblock->nNonce;
+                        continue;
+                    }
+                    miner.getSolution(pblock->cycle_arr);
+                    if (CheckProofOfWork(SerializeHash(pblock->cycle_arr), pblock->nBits, Params().GetConsensus())) { //cycle + T is ok
+                        found = true;
                         break;
                     }
+                    else {
+                        ++pblock->nNonce;
+                    }
                 }
+                if (found)
+                {
+                    // Found a solution
+                    //assert(hash == pblock->GetHash());
+
+                    SetThreadPriority(THREAD_PRIORITY_NORMAL);
+                    LogPrintf("BitcoinMiner:\n");
+                    std::string str = "cycle=\n";
+                    for (const auto& edge : pblock->cycle_arr) {
+                        str += strprintf("0x%08x, ", edge);
+                    }
+                    LogPrintf("proof-of-work found  \n  hash: %s  \ntarget: %s\ncycle_arr: %s", pblock->GetHash().ToString(), hashTarget.GetHex(), str);
+                    ProcessBlockFound(pblock, chainparams);
+                    SetThreadPriority(THREAD_PRIORITY_LOWEST);
+                    coinbaseScript->KeepScript();
+
+                    // In regression test mode, stop mining after a block is found.
+                    if (chainparams.MineBlocksOnDemand())
+                        throw boost::thread_interrupted();
+
+                    break;
+                }
+                
 
                 // Check for stop or if block needs to be rebuilt
                 boost::this_thread::interruption_point();
                 // Regtest mode doesn't require peers
                 if (vNodes.empty() && chainparams.MiningRequiresPeers())
                     break;
-                if (nNonce >= 0xffff0000)
+                if (pblock->nNonce >= 0xffff0000)
                     break;
                 if (mempool.GetTransactionsUpdated() != nTransactionsUpdatedLast && GetTime() - nStart > 60)
                     break;
