@@ -45,7 +45,7 @@ std::string CBlock::ToString() const
     }
     s << "cycle=\n";
     for (const auto& edge : cycle_arr) {
-        s << strprintf("0x%08x", edge);
+        s << strprintf("0x%08x, ", edge);
     }
     s << "\n";
     return s.str();

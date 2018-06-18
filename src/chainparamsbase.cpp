@@ -12,7 +12,7 @@
 
 const std::string CBaseChainParams::MAIN = "main";
 const std::string CBaseChainParams::TESTNET = "test";
-const std::string CBaseChainParams::REGTEST = "regtest";
+const std::string CBaseChainParams::REGTEST = "cuckoo";
 
 void AppendParamsHelpMessages(std::string& strUsage, bool debugHelp)
 {
@@ -60,7 +60,7 @@ public:
     CBaseRegTestParams()
     {
         nRPCPort = 18332;
-        strDataDir = "regtest";
+        strDataDir = "cuckoo";
     }
 };
 static CBaseRegTestParams regTestParams;
@@ -92,7 +92,7 @@ void SelectBaseParams(const std::string& chain)
 
 std::string ChainNameFromCommandLine()
 {
-    bool fRegTest = GetBoolArg("-regtest", false);
+    bool fRegTest = GetBoolArg("-cuckoo", false);
     bool fTestNet = GetBoolArg("-testnet", false);
 
     if (fTestNet && fRegTest)
