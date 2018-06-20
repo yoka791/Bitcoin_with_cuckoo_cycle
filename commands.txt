@@ -3,16 +3,27 @@
 make install
 
 cd /usr/local/bin
-./bitcoind -regtest -port=8330 -rpcport=8331 -rpcuser=user -rpcpassword=password -datadir=/root/node1data -printtoconsole
+./bitcoind -cuckoo -port=8330 -rpcport=8331 -rpcuser=user -rpcpassword=password -datadir=/root/node1data -printtoconsole
 
 cd /usr/local/bin
-./bitcoind -regtest -port=8333 -rpcport=8332 -rpcuser=user2 -rpcpassword=password2 -datadir=/root/node2data -printtoconsole -connect=127.0.0.1:8330
+./bitcoind -cuckoo -port=8333 -rpcport=8332 -rpcuser=user2 -rpcpassword=password2 -datadir=/root/node2data -printtoconsole -connect=192.168.20.2:8330
 
 cd /usr/local/bin
-./bitcoin-cli -regtest -port=8333 -rpcport=8332 -rpcuser=user2 -rpcpassword=password2  getblockcount
+./bitcoin-cli -cuckoo -rpcport=8332 -rpcuser=user2 -rpcpassword=password2  getblockcount
 
-./bitcoind -regtest -printtoconsole
-./bitcoin-cli -regtest getblockcount
+./bitcoin-cli -cuckoo -rpcport=8332 -rpcuser=user2 -rpcpassword=password2  setgenerate true 1
+./bitcoin-cli -cuckoo -rpcport=8331 -rpcuser=user -rpcpassword=password  setgenerate true 1
+
+./bitcoin-cli -cuckoo -rpcport=8331 -rpcuser=user -rpcpassword=password  getblockcount
+./bitcoin-cli -cuckoo -rpcport=8332 -rpcuser=user2 -rpcpassword=password2  getblockcount
+
+./bitcoin-cli -cuckoo -rpcport=8331 -rpcuser=user -rpcpassword=password  getmininginfo
+./bitcoin-cli -cuckoo -rpcport=8332 -rpcuser=user2 -rpcpassword=password2  getmininginfo
+
+./bitcoin-cli -cuckoo -rpcport=8331 -rpcuser=user -rpcpassword=password  getwalletinfo
+./bitcoin-cli -cuckoo -rpcport=8332 -rpcuser=user2 -rpcpassword=password2  getwalletinfo
+
+
 
 cd ~
 rm -rf .bitcoin/
