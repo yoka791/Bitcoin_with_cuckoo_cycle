@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
 	//ifstream myfile("/home/admin1/test_file.txt");
 	ifstream myfile("/home/admin1/final_project/test_file_200.txt");
 	ofstream csv_file;
-	csv_file.open("/home/admin1/final_project/data_500MB.csv");
+	//csv_file.open("/home/admin1/final_project/data_500MB.csv");
 	if (myfile.is_open()){
 		while (getline(myfile, line))
 		{
