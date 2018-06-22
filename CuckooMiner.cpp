@@ -30,7 +30,7 @@ CuckooMiner::genSolution(node_t *even_path_to_root, uint even_root_index, node_t
 		node_t node2_odd = odd_path_to_root[(odd_root_index + 1)&~1];
 		cycle.insert(edge(node1_odd, node2_odd)); // u's in odd position; v's in even
 	}
-	printf("Solution");
+	//printf("Solution");
 	uint counter = 0;
 	for (edge_t nonce = n = 0; (nonce < edges_num) && (counter < PROOFSIZE); nonce++) {
 		edge e(sipnode(&sip_keys, nonce, 0), sipnode(&sip_keys, nonce, 1));
@@ -43,6 +43,14 @@ CuckooMiner::genSolution(node_t *even_path_to_root, uint even_root_index, node_t
 			counter++;
 		}
 	}
+	printf("\n");
+        clock_t stop = clock();
+        int elapsed = (double)(stop - start) * 1000.0 / CLOCKS_PER_SEC;
+	int minutes = (int) ((elapsed / (1000*60)) % 60);
+	int seconds = (int) (elapsed / 1000) % 60 ;
+	double pre = ((double)solution_arr[41]/(edge_t)NNODES)*100.0;
+        //printf("Time elapsed in ms: %f, edge_precentage is: %f", elapsed, pre);
+	printf("Time elapsed is %dm%ds, edge_precentage is: %f", minutes, seconds, pre);
 	printf("\n");
 }
 

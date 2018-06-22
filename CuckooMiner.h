@@ -6,6 +6,7 @@
 #include <assert.h>
 #include <list>
 #include <vector>
+#include <time.h>
 #include <set>
 
 class CuckooMiner {
@@ -25,6 +26,7 @@ private:
 	siphash_keys sip_keys;
 	u64 edges_num;
 	node_t *cuckoo_table;
+        clock_t start = clock();
 };
 #endif //_CUCKOO_MINER_H
 

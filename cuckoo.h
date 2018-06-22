@@ -12,7 +12,7 @@
 #ifndef NODEBITS
 // the main parameter is the 2-log of the graph size,
 // which is the size in bits of the node identifiers
-#define NODEBITS 28
+#define NODEBITS 27
 #endif
 #ifndef PROOFSIZE
 // the next most important parameter is the (even) length
