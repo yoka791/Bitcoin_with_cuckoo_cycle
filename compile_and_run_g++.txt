@@ -1,0 +1,2 @@
+g++ -std=c++11 -D NODEBITS=22 main_read_file.cpp CuckooMiner.cpp cuckoo.cpp siphash.cpp sha256.cpp
+./a.out -f /home/admin1/final_project/test_file_200.txt -d /home/admin1/final_project/data_500MB.csv
