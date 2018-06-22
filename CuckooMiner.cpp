@@ -6,12 +6,11 @@
 CuckooMiner::CuckooMiner(const std::string &header, uint edge_precentage, string _csv_file_path)
 {
 	assert(edge_precentage <= 100);
-    csv_file_path = _csv_file_path;
+        csv_file_path = _csv_file_path;
 	this->edges_num = edge_precentage * (u64)NNODES / 100;
 	setKeysFromHeader(header, &sip_keys);
 	cuckoo_table = (node_t *)calloc(1 + NNODES, sizeof(node_t));  //2^27 +1
 	assert(cuckoo_table != 0);
-	csv_file.open("/home/admin1/final_project/data_500MB.csv", std::ios::app);
 	makeMinning();
 }
 
@@ -56,9 +55,9 @@ CuckooMiner::genSolution(node_t *even_path_to_root, uint even_root_index, node_t
 	int seconds = (int) (elapsed / 1000) % 60 ;
 	double pre = ((double)solution_arr[41]/(edge_t)NNODES)*100.0;
 	printf("Solution found: Time elapsed is %dm%ds, edge_precentage is: %f\n", minutes, seconds, pre);
-    csv_file.open(csv_file_path, std::ios::app);
+        csv_file.open(csv_file_path, std::ios::app);
 	csv_file << minutes <<":" << seconds << ", " << pre << "\n";
-    csv_file.close();
+        csv_file.close();
 }
 
 uint
