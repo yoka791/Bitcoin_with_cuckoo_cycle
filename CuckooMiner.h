@@ -20,6 +20,7 @@ private:
 
 public:
 	explicit CuckooMiner(const std::string &header, uint edge_precentage, ofstream &_csv_file);
+	~CuckooMiner();
 	bool isSolutionFound() const;
 	bool getSolution(std::array<edge_t, 42> &sol_arr) const;
 

@@ -13,6 +13,10 @@ CuckooMiner::CuckooMiner(const std::string &header, uint edge_precentage, ofstre
 	makeMinning();
 }
 
+CuckooMiner::~CuckooMiner()
+{
+        free(cuckoo_table);
+}
 
 void
 CuckooMiner::genSolution(node_t *even_path_to_root, uint even_root_index, node_t *odd_path_to_root, uint odd_root_index) {
