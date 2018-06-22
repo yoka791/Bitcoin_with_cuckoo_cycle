@@ -13,11 +13,14 @@ using namespace std;
 
 int main(int argc, char **argv) {
 	string line;
-	ifstream myfile("/home/admin1/test_file.txt");
+	//ifstream myfile("/home/admin1/test_file.txt");
+	ifstream myfile("/home/admin1/txt_test.txt");
+	ofstream csv_file;
+	csv_file.open("data_500MB.csv");
 	if (myfile.is_open()){
 		while (getline(myfile, line))
 		{
-			CuckooMiner cuc_miner(line, 70);
+			CuckooMiner cuc_miner(line, 70, csv_file);
 			if (cuc_miner.isSolutionFound()) {
 				array<edge_t, 42> solution_arr;
 				cuc_miner.getSolution(solution_arr);
