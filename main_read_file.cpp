@@ -9,7 +9,6 @@
 #include "CuckooMiner.h"
 
 using namespace std;
-//SHOW;SHOW_CYCLES_NONCES;PROOFSIZE=2;NODEBITS=4;%(PreprocessorDefinitions)
 
 int main(int argc, char **argv) {
     string headers_file_path;

@@ -11,6 +11,7 @@ CuckooMiner::CuckooMiner(const std::string &header, uint edge_precentage, string
 	setKeysFromHeader(header, &sip_keys);
 	cuckoo_table = (node_t *)calloc(1 + NNODES, sizeof(node_t));  //2^27 +1
 	assert(cuckoo_table != 0);
+	csv_file.open("/home/admin1/final_project/data_500MB.csv", std::ios::app);
 	makeMinning();
 }
 
