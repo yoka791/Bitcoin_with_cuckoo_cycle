@@ -3,10 +3,9 @@
 
 // assume EDGEBITS < 31
 #define MAXPATHLEN 8192
-CuckooMiner::CuckooMiner(const std::string &header, uint edge_precentage, ofstream *csv_file)
+CuckooMiner::CuckooMiner(const std::string &header, uint edge_precentage, ofstream &_csv_file) : csv_file(_csv_file)
 {
 	assert(edge_precentage <= 100);
-	this->csv_file = csv_file;
 	this->edges_num = edge_precentage * (u64)NNODES / 100;
 	setKeysFromHeader(header, &sip_keys);
 	cuckoo_table = (node_t *)calloc(1 + NNODES, sizeof(node_t));  //2^27 +1
@@ -52,7 +51,7 @@ CuckooMiner::genSolution(node_t *even_path_to_root, uint even_root_index, node_t
 	double pre = ((double)solution_arr[41]/(edge_t)NNODES)*100.0;
         //printf("Time elapsed in ms: %f, edge_precentage is: %f", elapsed, pre);
 	printf("Time elapsed is %dm%ds, edge_precentage is: %f", minutes, seconds, pre);
-	*csv_file << minutes <<":" << seconds << ", " << pre;
+	*csv_file << minutes <<":" << seconds << ", " << pre << "\n";
 	printf("\n");
 }
 

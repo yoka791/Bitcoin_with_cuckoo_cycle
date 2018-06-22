@@ -16,11 +16,11 @@ int main(int argc, char **argv) {
 	//ifstream myfile("/home/admin1/test_file.txt");
 	ifstream myfile("/home/admin1/txt_test.txt");
 	ofstream csv_file;
-	csv_file.open("data_500MB.csv");
+	csv_file.open("/home/admin1/final_project/data_500MB.csv");
 	if (myfile.is_open()){
 		while (getline(myfile, line))
 		{
-			CuckooMiner cuc_miner(line, 70, &csv_file);
+			CuckooMiner cuc_miner(line, 70, csv_file);
 			if (cuc_miner.isSolutionFound()) {
 				array<edge_t, 42> solution_arr;
 				cuc_miner.getSolution(solution_arr);
