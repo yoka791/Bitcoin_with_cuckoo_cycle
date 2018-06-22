@@ -52,7 +52,6 @@ CuckooMiner::genSolution(node_t *even_path_to_root, uint even_root_index, node_t
         //printf("Time elapsed in ms: %f, edge_precentage is: %f", elapsed, pre);
 	printf("Time elapsed is %dm%ds, edge_precentage is: %f", minutes, seconds, pre);
 	csv_file << minutes <<":" << seconds << ", " << pre << "\n";
-	printf("\n");
 }
 
 uint

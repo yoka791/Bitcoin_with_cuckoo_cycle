@@ -14,7 +14,7 @@ using namespace std;
 int main(int argc, char **argv) {
 	string line;
 	//ifstream myfile("/home/admin1/test_file.txt");
-	ifstream myfile("/home/admin1/test_file.txt");
+	ifstream myfile("/home/admin1/final_project/test_file_200.txt");
 	ofstream csv_file;
 	csv_file.open("/home/admin1/final_project/data_500MB.csv");
 	if (myfile.is_open()){
