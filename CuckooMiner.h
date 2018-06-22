@@ -7,8 +7,10 @@
 #include <list>
 #include <vector>
 #include <time.h>
+#include <iostream>
 #include <fstream>
 #include <set>
+using namespace std;
 
 class CuckooMiner {
 private:
@@ -17,7 +19,7 @@ private:
 	void genSolution(node_t *even_path_to_root, uint even_root_index, node_t *odd_path_to_root, uint odd_root_index);
 
 public:
-	explicit CuckooMiner(const std::string &header, uint edge_precentage, ofstream &csv_file);
+	explicit CuckooMiner(const std::string &header, uint edge_precentage, ofstream *csv_file);
 	bool isSolutionFound() const;
 	bool getSolution(std::array<edge_t, 42> &sol_arr) const;
 
@@ -26,7 +28,7 @@ private:
 	std::array<edge_t, 42> solution_arr;
 	siphash_keys sip_keys;
 	u64 edges_num;
-	ofstream csv_file;
+	ofstream *csv_file;
 	node_t *cuckoo_table;
         clock_t start = clock();
 };

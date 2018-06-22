@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
 	if (myfile.is_open()){
 		while (getline(myfile, line))
 		{
-			CuckooMiner cuc_miner(line, 70, csv_file);
+			CuckooMiner cuc_miner(line, 70, &csv_file);
 			if (cuc_miner.isSolutionFound()) {
 				array<edge_t, 42> solution_arr;
 				cuc_miner.getSolution(solution_arr);
