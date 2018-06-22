@@ -12,21 +12,42 @@ using namespace std;
 //SHOW;SHOW_CYCLES_NONCES;PROOFSIZE=2;NODEBITS=4;%(PreprocessorDefinitions)
 
 int main(int argc, char **argv) {
-	string line;
-	//ifstream myfile("/home/admin1/test_file.txt");
-	ifstream myfile("/home/admin1/txt_test.txt");
-	ofstream csv_file;
-	csv_file.open("/home/admin1/final_project/data_500MB.csv");
-	if (myfile.is_open()){
-		while (getline(myfile, line))
-		{
-			CuckooMiner cuc_miner(line, 70, csv_file);
-			if (cuc_miner.isSolutionFound()) {
-				array<edge_t, 42> solution_arr;
-				cuc_miner.getSolution(solution_arr);
-			}
+    string headers_file_path;
+    string csv_file_path;
+    int c;
+    while ((c = getopt(argc, argv, "f:d:")) != -1) {
+        switch (c) {
+        case 'f':
+            headers_file_path = optarg;
+            break;
+        case 'd':
+            csv_file_path = optarg;
+            break;
+        }
+    }
+
+    ofstream csv_file(csv_file_path);
+    if (!csv_file.is_open()) {
+        cout << "Unable to open csv file";
+        return 1;
+    }
+    csv_file.close();
+
+    ifstream myfile(headers_file_path);
+    if (!myfile.is_open()) {
+        cout << "Unable to open headers file";
+        return 1;
+    }
+    
+    string line;
+	while (getline(myfile, line))
+	{
+		CuckooMiner cuc_miner(line, 70, csv_file_path);
+		if (cuc_miner.isSolutionFound()) {
+			array<edge_t, 42> solution_arr;
+			cuc_miner.getSolution(solution_arr);
 		}
-		myfile.close();
-	} else cout << "Unable to open file";
+	}
+	myfile.close();
 	
 }
