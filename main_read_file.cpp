@@ -43,8 +43,14 @@ int main(int argc, char **argv) {
 	{
 		CuckooMiner cuc_miner(line, 70, csv_file_path);
 		if (cuc_miner.isSolutionFound()) {
-			array<edge_t, 42> solution_arr;
+			array<edge_t, PROOFSIZE> solution_arr;
 			cuc_miner.getSolution(solution_arr);
+            if (verify(solution_arr, line, 70)) {
+                printf("solution verified\n");
+            } else {
+                printf("error - solution not verified\n");
+                return 1;
+            }
 		}
 	}
 	myfile.close();

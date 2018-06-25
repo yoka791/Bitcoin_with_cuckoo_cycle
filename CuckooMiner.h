@@ -22,11 +22,11 @@ public:
 	explicit CuckooMiner(const std::string &header, uint edge_precentage, string _csv_file_path);
     ~CuckooMiner();
 	bool isSolutionFound() const;
-	bool getSolution(std::array<edge_t, 42> &sol_arr) const;
+	bool getSolution(std::array<edge_t, PROOFSIZE> &sol_arr) const;
 
 private:
 	bool is_solution_found = false;
-	std::array<edge_t, 42> solution_arr;
+	std::array<edge_t, PROOFSIZE> solution_arr;
 	siphash_keys sip_keys;
 	u64 edges_num;
     ofstream csv_file;

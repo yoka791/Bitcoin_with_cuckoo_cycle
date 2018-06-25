@@ -53,7 +53,7 @@ CuckooMiner::genSolution(node_t *even_path_to_root, uint even_root_index, node_t
     int elapsed = (double)(stop - start) * 1000.0 / CLOCKS_PER_SEC;
 	int minutes = (int) ((elapsed / (1000*60)) % 60);
 	int seconds = (int) (elapsed / 1000) % 60 ;
-	double pre = ((double)solution_arr[41]/(edge_t)NNODES)*100.0;
+	double pre = ((double)solution_arr[PROOFSIZE-1]/(edge_t)NNODES)*100.0;
 	printf("Solution found: Time elapsed is %dm%ds, edge_precentage is: %f\n", minutes, seconds, pre);
         csv_file.open(csv_file_path, std::ios::app);
 	csv_file << minutes <<":" << seconds << ", " << pre << "\n";
@@ -133,10 +133,10 @@ CuckooMiner::isSolutionFound() const
 }
 
 bool
-CuckooMiner::getSolution(std::array<edge_t, 42> &sol_arr) const 
+CuckooMiner::getSolution(std::array<edge_t, PROOFSIZE> &sol_arr) const
 {
 	if (!is_solution_found) return false;
-	for (uint i = 0; i < 42; i++) {
+	for (uint i = 0; i < PROOFSIZE; i++) {
 		sol_arr[i] = solution_arr[i];
 	}
 	return true;

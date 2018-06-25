@@ -16,7 +16,7 @@ void setKeysFromHeader(const std::string &header, siphash_keys *keys)
   setkeys(keys, header.c_str());
 }
 
-bool verify(const std::array<edge_t, 42> solution_arr, const std::string& header, const uint &edge_precentage)
+bool verify(const std::array<edge_t, PROOFSIZE> solution_arr, const std::string& header, const uint &edge_precentage)
 {
 	siphash_keys sip_keys;
 	setKeysFromHeader(header, &sip_keys);
