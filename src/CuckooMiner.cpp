@@ -72,7 +72,19 @@ CuckooMiner::makeMinning()
 {
 	node_t even_path_to_root[MAXPATHLEN], odd_path_to_root[MAXPATHLEN];
 	for (node_t nonce = 0; nonce < edges_num; nonce++) {
-		node_t even_node_index = sipnode(&sip_keys, nonce, 0);
+        /*#if NODEBITS == 27
+        if (nonce >= 0x4cccccc) {
+            printf("edge precentege excceds 60%% of total edges. stop mine this block\n");
+            return;
+        }
+        #elif NODEBITS == 28
+        if (nonce >= 0x8f5c28f) {
+            printf("edge precentege excceds 56%% of total edges. stop mine this block\n");
+            return;
+        }
+        #endif*/
+        //printf("cycle nonce = %lu, edges_num = %lu\n", nonce, edges_num);
+        node_t even_node_index = sipnode(&sip_keys, nonce, 0);
 		if (even_node_index == 0) continue; // reserve 0 as nil; odd_node_index guaranteed non-zero
 		node_t odd_node_index = sipnode(&sip_keys, nonce, 1);
 		node_t value_from_even_table = cuckoo_table[even_node_index];

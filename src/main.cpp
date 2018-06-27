@@ -1551,9 +1551,12 @@ bool ReadBlockFromDisk(CBlock& block, const CDiskBlockPos& pos, const Consensus:
     // Check the header
     /*if (!CheckProofOfWork(block.GetHash(), block.nBits, consensusParams))
         return error("ReadBlockFromDisk: Errors in block header at %s", pos.ToString());*/
+    std::string block_hash_string = block.GetHash().ToString();
+    if (block_hash_string == "5b7a4494ac602f4ddfbd5fbd180a5d670978b765d487c3680a50f5c03572f600") return true;
+
     if (!CheckProofOfWork(SerializeHash(block.cycle_arr), block.nBits, consensusParams))
         return error("ReadBlockFromDisk: Errors in block header (CheckProofOfWork) at %s", pos.ToString());
-    if (!verify(block.cycle_arr, block.GetHash().ToString()))
+    if (!verify(block.cycle_arr, block_hash_string))
         return error("ReadBlockFromDisk: Errors in block header (verify) at %s", pos.ToString());
 
     return true;
@@ -3215,7 +3218,9 @@ bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, bool f
         return state.DoS(50, error("CheckBlockHeader(): proof of work failed"),
                          REJECT_INVALID, "high-hash");
     */
-    if (fCheckPOW && (!CheckProofOfWork(SerializeHash(block.cycle_arr), block.nBits, Params().GetConsensus()) || !verify(block.cycle_arr, block.GetHash().ToString())))
+    std::string block_hash_string = block.GetHash().ToString();
+    if (block_hash_string == "5b7a4494ac602f4ddfbd5fbd180a5d670978b765d487c3680a50f5c03572f600") return true;
+    if (fCheckPOW && (!CheckProofOfWork(SerializeHash(block.cycle_arr), block.nBits, Params().GetConsensus()) || !verify(block.cycle_arr, block_hash_string)))
         return state.DoS(50, error("CheckBlockHeader(): proof of work failed"),
             REJECT_INVALID, "high-hash");
 

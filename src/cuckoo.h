@@ -11,7 +11,7 @@
 #ifndef NODEBITS
 // the main parameter is the 2-log of the graph size,
 // which is the size in bits of the node identifiers
-#define NODEBITS 28
+#define NODEBITS 27
 #endif
 #ifndef PROOFSIZE
 // the next most important parameter is the (even) length
@@ -19,7 +19,7 @@
 #define PROOFSIZE 42
 #endif
 
-#define EDGE_PRECENTAGE 70
+#define EDGE_PRECENTAGE 52
 
 #if NODEBITS > 31
 typedef u64 node_t;

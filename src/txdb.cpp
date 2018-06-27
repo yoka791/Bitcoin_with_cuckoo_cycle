@@ -207,12 +207,13 @@ bool CBlockTreeDB::LoadBlockIndexGuts()
 
                 /*if (!CheckProofOfWork(pindexNew->GetBlockHash(), pindexNew->nBits, Params().GetConsensus()))
                     return error("LoadBlockIndex(): CheckProofOfWork failed: %s", pindexNew->ToString());*/
-
-                if (!CheckProofOfWork(SerializeHash(pindexNew->cycle_arr), pindexNew->nBits, Params().GetConsensus()))
-                    return error("LoadBlockIndex(): CheckProofOfWork failed: %s", pindexNew->ToString());
-                if (!verify(pindexNew->cycle_arr, pindexNew->GetBlockHash().ToString()))
-                    return error("%s: verify failed: %s", __func__, pindexNew->ToString());
-
+                std::string block_hash_string = pindexNew->GetBlockHash().ToString();
+                if (block_hash_string != "5b7a4494ac602f4ddfbd5fbd180a5d670978b765d487c3680a50f5c03572f600") {
+                    if (!CheckProofOfWork(SerializeHash(pindexNew->cycle_arr), pindexNew->nBits, Params().GetConsensus()))
+                        return error("LoadBlockIndex(): CheckProofOfWork failed: %s", pindexNew->ToString());
+                    if (!verify(pindexNew->cycle_arr, block_hash_string))
+                        return error("%s: verify failed: %s", __func__, pindexNew->ToString());
+                }
                 pcursor->Next();
             } else {
                 return error("LoadBlockIndex() : failed to read value");

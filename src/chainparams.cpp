@@ -248,7 +248,7 @@ public:
         consensus.nMajorityWindow = 1000;
         consensus.BIP34Height = -1; // BIP34 has not necessarily activated on regtest
         consensus.BIP34Hash = uint256();
-        consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        consensus.powLimit = uint256S("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.nPowTargetTimespan = 14 * 24 * 60 * 60; // two weeks
         consensus.nPowTargetSpacing = 10 * 60;
         consensus.fPowAllowMinDifficultyBlocks = true;
@@ -275,10 +275,21 @@ public:
 #elif NODEBITS == 28
         std::array<edge_t, 42> cycle_arr = { 0x40a7a2,  0x74e1e4,  0xda541e,  0x10e9985,  0x14b65ac,  0x17cce56,  0x2348a53,  0x2450dc8,  0x2a632ea,  0x2ab58a1,  0x2cc5cfd,  0x2d62c17,  0x367057b,  0x3ae521c,  0x3bb026f,  0x3cfb994,  0x3e1021a,  0x3ea524c,  0x40b756c,  0x42673ad,  0x42e399e,  0x4519e38,  0x45dc398,  0x46e31de,  0x497af78,  0x4a9d241,  0x4fb1be6,  0x4fb25f8,  0x59188d2,  0x5abe191,  0x6209e75,  0x652e7f0,  0x65d5ae0,  0x70b69f0,  0x73dc96f,  0x73e0586,  0x76e7a77,  0x777691e,  0x7d9f7cf,  0x847dbf7,  0x915a67a,  0x92c8802 };
         genesis = CreateGenesisBlock(1296688602, 3, 0x207fffff, 1, 50 * COIN, cycle_arr);
+#elif NODEBITS == 27
+        std::array<edge_t, 42> cycle_arr = { 0x3d72cd,  0x41f3ca,  0x5fac2f,  0x68f335,  0x747999,  0xa0c28b,  0xbca9ce,  0xdfe43b,  0xe75826,  0xf2c847,  0x1038ddf,  0x17feec5,  0x19796a6,  0x1b41799,  0x1ce93fc,  0x1d887d7,  0x1eee9b1,  0x209a43a,  0x20d834b,  0x247a891,  0x2508412,  0x25622d9,  0x2587914,  0x28d1163,  0x2b868fd,  0x2c92d69,  0x2d75ba0,  0x30ffcd8,  0x33f126a,  0x3556950,  0x36ba03b,  0x3ab7eae,  0x3b58ea2,  0x3ba7161,  0x3dff0c5,  0x3f064c8,  0x3f2d438,  0x3f486c8,  0x4575175,  0x457969d,  0x495d0af,  0x4b2dc86 };
+        genesis = CreateGenesisBlock(1296688602, 3, 0x207fffff, 1, 50 * COIN, cycle_arr);
 #else 
         assert(false);
 #endif
         consensus.hashGenesisBlock = genesis.GetHash();
+        /*
+        u_int32_t nonce = 0;
+        for (uint i = 0; i <= 100; i++) {
+            genesis = CreateGenesisBlock(1296688602, nonce, 0x207fffff, 1, 50 * COIN, cycle_arr);
+            genesis.GetHash().ToString();
+            printf("%s\n")
+        }
+        */
 
         assert(consensus.hashGenesisBlock == uint256S("0x5b7a4494ac602f4ddfbd5fbd180a5d670978b765d487c3680a50f5c03572f600"));
         assert(genesis.hashMerkleRoot == uint256S("0x4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b"));

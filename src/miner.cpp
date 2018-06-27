@@ -444,8 +444,14 @@ void static BitcoinMiner(const CChainParams& chainparams)
                 {
                     CuckooMiner miner(pblock->GetHash().ToString(), EDGE_PRECENTAGE);
                     if (!miner.isSolutionFound()) {
-                        ++pblock->nNonce;
-                        continue;
+                        LogPrintf("Error: cycle not found\n");
+                        if (pblock->nNonce > 10) {
+                            break;
+                        }
+                        else {
+                            ++pblock->nNonce;
+                            continue;
+                        }
                     }
                     miner.getSolution(pblock->cycle_arr);
                     if (CheckProofOfWork(SerializeHash(pblock->cycle_arr), pblock->nBits, Params().GetConsensus())) { //cycle + T is ok
@@ -463,11 +469,11 @@ void static BitcoinMiner(const CChainParams& chainparams)
 
                     SetThreadPriority(THREAD_PRIORITY_NORMAL);
                     LogPrintf("BitcoinMiner:\n");
-                    std::string str = "cycle=\n";
+                    /*std::string str = "cycle=\n";
                     for (const auto& edge : pblock->cycle_arr) {
                         str += strprintf("0x%08x, ", edge);
-                    }
-                    LogPrintf("proof-of-work found  \n  hash: %s  \ntarget: %s\ncycle_arr: %s", pblock->GetHash().ToString(), hashTarget.GetHex(), str);
+                    }*/
+                    LogPrintf("proof-of-work found  \n  hash: %s  \ntarget: %s", pblock->GetHash().ToString(), hashTarget.GetHex());
                     ProcessBlockFound(pblock, chainparams);
                     SetThreadPriority(THREAD_PRIORITY_LOWEST);
                     coinbaseScript->KeepScript();
@@ -501,6 +507,12 @@ void static BitcoinMiner(const CChainParams& chainparams)
                     // Changing pblock->nTime can change work required on testnet:
                     hashTarget.SetCompact(pblock->nBits);
                 }
+
+                if (pblock->nNonce > 10) {
+                    LogPrintf("Error: nonce > 10, rebuilding block\n");
+                    break;
+                }
+
             }
         }
     }
