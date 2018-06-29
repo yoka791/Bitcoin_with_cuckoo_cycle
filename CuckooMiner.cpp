@@ -125,6 +125,15 @@ CuckooMiner::makeMinning()
 				cuckoo_table[odd_node_index] = even_node_index;
 			}
 	}
+    clock_t stop = clock();
+    int elapsed = (double)(stop - start) * 1000.0 / CLOCKS_PER_SEC;
+        int minutes = (int) ((elapsed / (1000*60)) % 60);
+        int seconds = (int) (elapsed / 1000) % 60 ;
+        printf("ERROR: Solution NOT found: Time elapsed is %dm%ds\n", minutes, seconds);
+        csv_file.open(csv_file_path, std::ios::app);
+        csv_file << minutes <<":" << seconds << "\n";
+        csv_file.close();
+
 }
 bool
 CuckooMiner::isSolutionFound() const
